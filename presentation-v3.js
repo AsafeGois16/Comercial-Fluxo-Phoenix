@@ -186,5 +186,11 @@ function closing(){
   return '<article class="paper v3-close">'+backgroundOrbs()+'<div class="v3-close-upper"><div class="v3-cover-brand"><img src="logo.svg" alt=""><div><strong>PHOENIX</strong><span>INSURANCE</span></div></div><span class="v3-close-kicker">UMA PARCERIA QUE COMEÇA COM CONFIANÇA</span><h2>Obrigado<br>pela <em>confiança.</em></h2><p>A Phoenix Insurance agradece a oportunidade de apresentar estas alternativas de proteção. Conte conosco para esclarecer as condições e apoiar os próximos passos.</p></div><div class="v3-close-bottom"><div class="v3-close-line"></div><span>FALE COM A NOSSA EQUIPE</span><h3>'+safe(consultant)+'</h3><p>WhatsApp: '+safe(get('contact'))+'</p><p>E-mail: '+safe(get('email'))+'</p><div class="v3-close-banner">PROTEGEMOS O QUE É IMPORTANTE PARA VOCÊ.</div><div class="v3-finish">PHOENIX INSURANCE <b>·</b> PROPOSTAS 360</div></div></article>';
 }
 proposalPages=function(){return premiumCover()+aboutPhoenix()+financePages()+productPages()+insurerPages()+documentationPages()+closing()};
+renderPreview=function(){
+  const html=proposalPages();
+  const holder=document.createElement('div');holder.innerHTML=html;
+  EL('proposalPreview').innerHTML=Array.from(holder.children).map(page=>'<div class="v3-preview-frame"><div class="v3-mini-inner">'+page.outerHTML+'</div></div>').join('');
+  EL('printRoot').innerHTML=html;
+};
 document.addEventListener('DOMContentLoaded',mount);
 })();
