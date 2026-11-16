@@ -10,9 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="presentation-v3.css">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script defer src="app.js"></script>
+  <script defer src="presentation-v3.js"></script>
 </head>
 <body>
   <div class="app">
@@ -24,7 +26,7 @@
         <a class="nav" href="#financeiro"><span>▤</span> Comparativo financeiro</a>
         <a class="nav" href="#apresentacao"><span>▧</span> Apresentação premium</a>
       </nav>
-      <div class="side-bottom"><div class="signal"></div><div><b>Versão piloto 0.2</b><span>Ambiente independente · Dados apenas nesta sessão</span></div></div>
+      <div class="side-bottom"><div class="signal"></div><div><b>Versão piloto 0.3</b><span>Ambiente independente · Dados apenas nesta sessão</span></div></div>
     </aside>
     <main class="main no-print">
       <div class="topline"><div class="breadcrumb">COMERCIAL <span>/</span> PHOENIX PROPOSTAS 360</div><div class="version">PILOTO · SEM PUBLICAÇÃO AO CLIENTE</div></div>
@@ -41,18 +43,18 @@
           <label class="full-label">Instrução para o leitor inteligente<textarea id="instructions" rows="3" placeholder="Ex.: Compare o plano atual com a Amil e a Bradesco, usando os valores individuais das 5 vidas. Destaque a diferença mensal e anual."></textarea></label>
         </div>
         <div class="panel reader-panel">
-          <div class="panel-title"><span class="panel-icon gold">✧</span><div><h3>Leitor inteligente</h3><p>PDF, TXT, CSV, XLSX ou texto colado</p></div></div>
-          <label class="drop" id="drop"><input id="files" type="file" accept=".pdf,.txt,.csv,.xlsx,.xls" multiple><span class="drop-icon">⇧</span><b>Arraste suas cotações aqui</b><small>ou clique para selecionar arquivos</small><span class="drop-foot">Leitura local · Nenhum arquivo é enviado para servidor</span></label>
+          <div class="panel-title"><span class="panel-icon gold">✧</span><div><h3>Leitor inteligente</h3><p>PDF, TXT, CSV, XLSX ou texto colado · leitura por regras</p></div></div>
+          <label class="drop" id="drop"><input id="files" type="file" accept=".pdf,.txt,.csv,.xlsx,.xls" multiple><span class="drop-icon">⇧</span><b>Arraste suas cotações aqui</b><small>ou clique para selecionar arquivos</small><span class="drop-foot">Leitura local experimental · Conferência manual obrigatória</span></label>
           <div id="filesList" class="files-list" aria-live="polite"></div>
           <details class="paste-area"><summary>Ou cole uma tabela de vidas e valores</summary><textarea id="rawText" rows="4" placeholder="Nome; Idade; Valor Plano Atual; Valor Amil&#10;Maria Silva; 42; 450,00; 430,00"></textarea></details>
           <div class="reader-actions"><button id="btnRead" class="btn primary">✦ Interpretar e montar</button><span id="readerState" role="status">Aguardando documentos</span></div>
           <div id="readerReview" class="reader-review" hidden></div>
         </div>
       </section>
-      <section class="section-head" id="financeiro"><div><div class="eyebrow dark">02 / FINANCEIRO</div><h2>Comparativo por beneficiário</h2><p>Estrutura resgatada do editor Phoenix: <b>vida, idade, valor por plano, subtotal e diferenças financeiras.</b></p></div><div class="actions"><button class="btn secondary" id="btnAddPlan">+ Adicionar opção</button><button class="btn secondary" id="btnAddLife">+ Adicionar vida</button></div></section>
+      <section class="section-head" id="financeiro"><div><div class="eyebrow dark">02 / FINANCEIRO</div><h2>Comparativo por beneficiário</h2><p>O comparativo adapta os rótulos ao ramo. Em saúde e odonto, mantém <b>nome, idade e valor por vida.</b></p></div><div class="actions"><button class="btn secondary" id="btnAddPlan">+ Adicionar opção</button><button class="btn secondary" id="btnAddLife">+ Adicionar vida</button></div></section>
       <section class="panel finance-panel"><div class="table-top"><div><span class="label-kicker">ESTRUTURA PHOENIX · SAÚDE / ODONTO</span><h3>Composição do investimento mensal</h3></div><div class="finance-settings"><label>IOF (%) <input id="iof" type="number" step="0.01" min="0" max="100" value="0" aria-label="Porcentagem de IOF"></label><span class="hint" title="Aplique apenas quando os valores informados não incluem IOF e o tributo for pertinente.">ⓘ</span></div></div><div class="table-scroller"><table class="compare" id="compareTable"><thead></thead><tbody></tbody><tfoot></tfoot></table></div><p class="fine">O primeiro plano é a referência do comparativo. O IOF começa em 0% para evitar cobrança duplicada. Só informe uma alíquota quando for aplicável e não estiver incluída nos valores de origem.</p></section>
       <section class="kpi-grid" id="kpis"></section>
-      <section class="section-head" id="apresentacao"><div><div class="eyebrow dark">03 / APRESENTAÇÃO</div><h2>Uma proposta. Outra percepção.</h2><p>Capa, comparativo financeiro, análise executiva e contracapa no padrão premium Phoenix.</p></div><div class="actions"><button id="btnReset" class="btn secondary">Limpar rascunho</button><button id="btnPrint" class="btn primary">Exportar / Salvar PDF ↗</button></div></section>
+      <section class="section-head" id="apresentacao"><div><div class="eyebrow dark">04 / PRÉ-VISUALIZAÇÃO</div><h2>Uma proposta. Outra percepção.</h2><p>Sete seções: capa, Phoenix, comparativo financeiro, produtos, seguradoras, documentação e contracapa.</p></div><div class="actions"><button id="btnReset" class="btn secondary">Limpar rascunho</button><button id="btnPrint" class="btn primary">Exportar / Salvar PDF ↗</button></div></section>
       <section class="preview-panel"><div class="preview-header"><div><span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span><strong>Prévia do documento</strong></div><span>Formato A4 · revisão obrigatória</span></div><div id="proposalPreview" class="preview-thumbs"></div></section>
       <footer class="web-footer">PHOENIX INSURANCE <span>·</span> PROPOSTAS 360 <span>·</span> <b>AMBIENTE DE TESTES</b></footer>
     </main>
