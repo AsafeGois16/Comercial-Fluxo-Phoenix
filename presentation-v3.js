@@ -27,6 +27,7 @@ const editor={
  email:'atendimento@phoenixseg.com.br',
  touched:{}
 };
+const DEFAULT_EDITOR=JSON.parse(JSON.stringify(editor));
 let currentProduct='Saúde';
 let previousReaderNote='';
 const EL=id=>document.getElementById(id);
@@ -103,6 +104,19 @@ function mount(){
   EL('v3period').addEventListener('change',()=>renderAll());
   EL('product').addEventListener('change',()=>{currentProduct=EL('product').value;EL('v3period').value=profile().defaultPeriod;setDefaultProductText();renderAll()});
   EL('btnAddPlan').addEventListener('click',()=>renderDifferentials());
+  EL('btnExample').addEventListener('click',()=>renderDifferentials());
+  window.phoenixV3Reset=()=>{
+    const defaults=JSON.parse(JSON.stringify(DEFAULT_EDITOR));
+    Object.keys(defaults).forEach(k=>editor[k]=defaults[k]);
+    EL('product').value='Saúde';
+    EL('v3period').value='mensal';
+    for(const key of ['about','aboutTagline','summary','characteristics','documents','validity','conditions','contact','email']){
+      if(EL('v3'+key)) EL('v3'+key).value=editor[key]||'';
+    }
+    setDefaultProductText();
+    renderDifferentials();
+    renderAll();
+  };
   EL('compareTable').addEventListener('change',e=>{if(e.target.dataset.field==='planName')renderDifferentials()});
   setDefaultProductText();
   renderDifferentials();
