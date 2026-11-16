@@ -1,4 +1,4 @@
-/* Phoenix Propostas 360 · piloto independente 0.2
+/* Phoenix Propostas 360 · piloto independente 0.3
  * Leitura local por regras; revisão humana obrigatória. Não há API de IA conectada.
  * Não transmite nem armazena dados de beneficiários em servidor.
  */
@@ -24,7 +24,7 @@ function bind(){
   $('btnPrint').addEventListener('click',printDocument);
   $('btnPrintTop').addEventListener('click',printDocument);
   $('compareTable').addEventListener('input',ev=>{let t=ev.target,lIndex=Number(t.dataset.life),pIndex=Number(t.dataset.plan);if(t.dataset.field==='name')state.lives[lIndex].name=t.value;else if(t.dataset.field==='age'){state.lives[lIndex].age=t.value}else if(t.dataset.field==='value'){state.lives[lIndex].values[pIndex]=t.value}else if(t.dataset.field==='planName')state.plans[pIndex].name=t.value;else if(t.dataset.field==='productName')state.plans[pIndex].product=t.value;else return;renderSummary();renderPreview()});
-  $('compareTable').addEventListener('change',ev=>{if(ev.target.matches('input[data-field="age"]')){let n=Number(ev.target.value);if(n>120||n<0){ev.target.value='';state.lives[Number(ev.target.dataset.life)].age=''}}});
+  $('compareTable').addEventListener('change',ev=>{if(ev.target.matches('input[data-field="age"]')){const n=Number(ev.target.value),p=$('product').value;const isYear=p==='Automóvel'||p==='Frota';if(!Number.isFinite(n)||(isYear?(n<1900||n>2100):(n<0||n>120))){ev.target.value='';state.lives[Number(ev.target.dataset.life)].age=''}}});
   $('compareTable').addEventListener('click',ev=>{const btn=ev.target.closest('button[data-remove]');if(!btn)return;const i=Number(btn.dataset.remove);if(state.lives.length===1){state.lives[0]={id:uid(),name:'',age:'',values:state.plans.map(()=>'')}}else state.lives.splice(i,1);renderAll()});
   $('files').addEventListener('change',ev=>{state.files=[...ev.target.files];renderFiles()});
   const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('dragover')});drop.addEventListener('dragleave',()=>drop.classList.remove('dragover'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('dragover');state.files=[...e.dataTransfer.files];renderFiles()});
