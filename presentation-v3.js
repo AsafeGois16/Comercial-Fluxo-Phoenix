@@ -14,12 +14,23 @@ const P={
  'Residencial':{item:'ITEM / BEM SEGURADO',extra:'QTD.',line:'Prêmio por item',defaultPeriod:'anual',plural:'itens segurados',focus:'coberturas patrimoniais, limites, franquias e assistências',heading:'Cuidado e proteção patrimonial',hint:'Informe o prêmio total da opção ou os prêmios por item apenas quando separados pela seguradora. Quantidade é informativa.'},
  'Outros':{item:'ITEM / OBJETO SEGURADO',extra:'QTD.',line:'Prêmio por item',defaultPeriod:'anual',plural:'itens',focus:'coberturas, condições financeiras, vigência e franquias',heading:'Soluções de proteção personalizadas',hint:'Descreva os itens e informe valores efetivamente cotados, sem rateios presumidos.'}
 };
+const TECH={
+ 'Saúde':['Acomodação','Coparticipação','Abrangência','Rede credenciada','Carências'],
+ 'Odontológico':['Abrangência','Rede odontológica','Procedimentos','Carências'],
+ 'Vida':['Capital segurado','Coberturas','Assistências','Carências / exclusões'],
+ 'Automóvel':['Franquia','Cobertura de casco','Danos a terceiros','Assistência 24h','Carro reserva'],
+ 'Frota':['Franquia','Casco','Danos a terceiros','Assistência','Condições da frota'],
+ 'Empresarial':['Coberturas','Limite de indenização','Franquias','Assistências'],
+ 'Residencial':['Coberturas','Limites','Franquias','Assistências'],
+ 'Outros':['Coberturas','Limites','Franquias','Condições gerais']
+};
 const editor={
  about:'A Phoenix Insurance atua com consultoria em seguros e benefícios para pessoas e empresas. Nosso trabalho une escuta, comparação cuidadosa de alternativas e acompanhamento em cada etapa da contratação.',
  aboutTagline:'Proteção com inteligência. Atendimento com proximidade.',
  summary:'',
  characteristics:'',
  differentials:{},
+ tech:{},
  documents:'',
  conditions:'',
  validity:'',
@@ -88,6 +99,7 @@ function mount(){
   '<div class="v3-editor-grid">'+
   '<section class="v3-card"><div class="v3-card-head"><span>02</span><div><h3>Sobre a Phoenix</h3><small>Mensagem institucional e posicionamento</small></div></div><label>Apresentação institucional<textarea id="v3about" maxlength="1200" rows="4"></textarea></label><label>Chamada principal<input id="v3aboutTagline" maxlength="100"></label></section>'+
   '<section class="v3-card"><div class="v3-card-head"><span>04</span><div><h3>Descrição do produto</h3><small>Características, coberturas e condições</small></div></div><label>Resumo do produto<textarea id="v3summary" maxlength="1800" rows="4"></textarea></label><label>Informações técnicas confirmadas<textarea id="v3characteristics" maxlength="1800" rows="3" placeholder="Ex.: abrangência, acomodação, capital segurado, franquia, coberturas, parcelamento..."></textarea></label></section>'+
+  '<section class="v3-card v3-card-technical"><div class="v3-card-head"><span>03</span><div><h3>Condições técnicas por opção</h3><small>Campos especializados para cada ramo; utilize apenas dados confirmados.</small></div></div><div id="v3technicalEditors"></div></section>'+
   '<section class="v3-card"><div class="v3-card-head"><span>05</span><div><h3>Diferenciais das seguradoras</h3><small>Uma descrição para cada opção comparada</small></div></div><div id="v3differentialEditors"></div></section>'+
   '<section class="v3-card"><div class="v3-card-head"><span>06</span><div><h3>Documentação e condições</h3><small>Checklist a confirmar com cada seguradora</small></div></div><label>Documentos para contratação (um por linha)<textarea id="v3documents" maxlength="2500" rows="4" placeholder="Ex.: Documento de identificação dos proponentes (conforme cotação)&#10;Formulário exigido pela seguradora..."></textarea></label><label>Validade da cotação<input id="v3validity" type="date"></label><label>Condições e observações<textarea id="v3conditions" maxlength="1400" rows="3"></textarea></label></section>'+
   '<section class="v3-card v3-card-contact"><div class="v3-card-head"><span>07</span><div><h3>Contracapa e contatos</h3><small>Confirme os dados da corretora</small></div></div><div class="v3-two"><label>Telefone / WhatsApp<input id="v3contact"></label><label>E-mail institucional<input id="v3email" type="email"></label></div></section>'+
@@ -102,9 +114,9 @@ function mount(){
   }
   EL('v3period').value=profile().defaultPeriod;
   EL('v3period').addEventListener('change',()=>renderAll());
-  EL('product').addEventListener('change',()=>{currentProduct=EL('product').value;EL('v3period').value=profile().defaultPeriod;setDefaultProductText();renderAll()});
-  EL('btnAddPlan').addEventListener('click',()=>renderDifferentials());
-  EL('btnExample').addEventListener('click',()=>renderDifferentials());
+  EL('product').addEventListener('change',()=>{currentProduct=EL('product').value;EL('v3period').value=profile().defaultPeriod;setDefaultProductText();renderTechnicalEditors();renderAll()});
+  EL('btnAddPlan').addEventListener('click',()=>{renderDifferentials();renderTechnicalEditors()});
+  EL('btnExample').addEventListener('click',()=>{renderDifferentials();renderTechnicalEditors()});
   window.phoenixV3Reset=()=>{
     const defaults=JSON.parse(JSON.stringify(DEFAULT_EDITOR));
     Object.keys(defaults).forEach(k=>editor[k]=defaults[k]);
@@ -115,11 +127,13 @@ function mount(){
     }
     setDefaultProductText();
     renderDifferentials();
+    renderTechnicalEditors();
     renderAll();
   };
-  EL('compareTable').addEventListener('change',e=>{if(e.target.dataset.field==='planName')renderDifferentials()});
+  EL('compareTable').addEventListener('change',e=>{if(e.target.dataset.field==='planName'){renderDifferentials();renderTechnicalEditors()}});
   setDefaultProductText();
   renderDifferentials();
+  renderTechnicalEditors();
   decorateComparison();
   renderAll();
 }
@@ -134,6 +148,27 @@ function renderDifferentials(){
   const list=EL('v3differentialEditors');if(!list)return;
   list.innerHTML=state.plans.map((p,i)=>'<div class="v3-diff"><div><b>'+safe(p.name)+'</b><span>Opção '+(i+1)+'</span></div><textarea rows="3" maxlength="600" data-diff="'+safe(p.id)+'" placeholder="Informe somente diferenciais verificados: assistências, programas, coberturas adicionais, facilidades...">'+safe(editor.differentials[p.id]||'')+'</textarea></div>').join('');
   list.querySelectorAll('textarea').forEach(el=>el.addEventListener('input',()=>{editor.differentials[el.dataset.diff]=el.value;renderPreview()}))
+}
+function renderTechnicalEditors(){
+  const el=EL('v3technicalEditors');if(!el)return;
+  const fields=TECH[EL('product').value]||TECH.Outros;
+  el.innerHTML=state.plans.map((p,i)=>{
+    const inputs=fields.map((f,j)=>'<label>'+safe(f)+'<input type="text" maxlength="160" data-tech="'+safe(p.id)+'" data-key="'+j+'" placeholder="A confirmar na cotação" value="'+safe(editor.tech[p.id]?.[j]||'')+'"></label>').join('');
+    return '<div class="v3-technical-option"><div class="v3-technical-title"><b>'+safe(p.name)+'</b><span>OPÇÃO '+(i+1)+'</span></div><div class="v3-technical-fields">'+inputs+'</div></div>';
+  }).join('');
+  el.querySelectorAll('input[data-tech]').forEach(input=>input.addEventListener('input',()=>{
+    const key=input.dataset.tech,idx=Number(input.dataset.key);
+    if(!editor.tech[key])editor.tech[key]={};
+    editor.tech[key][idx]=input.value;
+    renderPreview();
+  }));
+}
+function technicalComparisonPage(){
+  const labels=TECH[EL('product').value]||TECH.Outros;
+  if(!state.plans.some(p=>Object.values(editor.tech[p.id]||{}).some(x=>String(x||'').trim())))return '';
+  const head='<thead><tr><th>CONDIÇÃO</th>'+state.plans.map(p=>'<th>'+safe(p.name)+'</th>').join('')+'</tr></thead>';
+  const rows='<tbody>'+labels.map((label,i)=>'<tr><td>'+safe(label)+'</td>'+state.plans.map(p=>'<td>'+safe(editor.tech[p.id]?.[i]?.trim()||'Não informado')+'</td>').join('')+'</tr>').join('')+'</tbody>';
+  return '<article class="paper v3-finance v3-technical-paper">'+pageHead('03','COMPARATIVO TÉCNICO')+'<div class="v3-finance-content">'+nudgeTag('03','COMPARAÇÃO DAS COBERTURAS')+'<h2>Além do preço:<br><em>as condições.</em></h2><p class="v3-lead">Diferenças documentadas por produto e seguradora. Campos não preenchidos aparecem como não informados.</p><div class="v3-table-wrap"><table class="v3-pdf-table v3-spec-table">'+head+rows+'</table></div><div class="v3-doc-warning">Confirme as informações nas condições oficiais da seguradora. Uma cobertura ausente do quadro não significa necessariamente ausência de cobertura no produto.</div></div>'+pageFoot('03','CONDIÇÕES DO PRODUTO')+'</article>';
 }
 function splitText(t,max){
   const str=String(t||'').trim();if(!str)return [''];
@@ -199,7 +234,7 @@ function closing(){
   const consultant=EL('consultor').value.trim()||'Equipe Phoenix';
   return '<article class="paper v3-close">'+backgroundOrbs()+'<div class="v3-close-upper"><div class="v3-cover-brand"><img src="logo.svg" alt=""><div><strong>PHOENIX</strong><span>INSURANCE</span></div></div><span class="v3-close-kicker">UMA PARCERIA QUE COMEÇA COM CONFIANÇA</span><h2>Obrigado<br>pela <em>confiança.</em></h2><p>A Phoenix Insurance agradece a oportunidade de apresentar estas alternativas de proteção. Conte conosco para esclarecer as condições e apoiar os próximos passos.</p></div><div class="v3-close-bottom"><div class="v3-close-line"></div><span>FALE COM A NOSSA EQUIPE</span><h3>'+safe(consultant)+'</h3><p>WhatsApp: '+safe(get('contact'))+'</p><p>E-mail: '+safe(get('email'))+'</p><div class="v3-close-banner">PROTEGEMOS O QUE É IMPORTANTE PARA VOCÊ.</div><div class="v3-finish">PHOENIX INSURANCE <b>·</b> PROPOSTAS 360</div></div></article>';
 }
-proposalPages=function(){return premiumCover()+aboutPhoenix()+financePages()+productPages()+insurerPages()+documentationPages()+closing()};
+proposalPages=function(){return premiumCover()+aboutPhoenix()+financePages()+technicalComparisonPage()+productPages()+insurerPages()+documentationPages()+closing()};
 renderPreview=function(){
   const html=proposalPages();
   const holder=document.createElement('div');holder.innerHTML=html;
