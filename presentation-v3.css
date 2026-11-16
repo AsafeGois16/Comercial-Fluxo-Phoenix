@@ -18,3 +18,20 @@
 /* Closing page */
 .v3-close{background:linear-gradient(180deg,#f7fbff 0%,#fff 54%,#0a2246 54%,#071932 100%)}.v3-close .v3-orb-a{border-color:#83afe044;top:-460px;right:-390px}.v3-close-upper{position:relative;padding:74px 70px 0;height:54%}.v3-close-upper .v3-cover-brand strong{color:#0a2e59}.v3-close-upper .v3-cover-brand span{color:#335f89}.v3-close-kicker{display:block;font-size:11px;letter-spacing:2px;color:#ba9256;font-weight:900;margin-top:120px}.v3-close-upper h2{color:#0b2c56;font:800 62px/1.12 'Manrope',sans-serif;letter-spacing:-2.5px;margin:25px 0}.v3-close-upper h2 em{font-style:normal;color:#3380bc}.v3-close-upper p{max-width:610px;font-size:16px!important;color:#708aa3;line-height:1.75!important}.v3-close-bottom{padding:70px 70px;color:#fff}.v3-close-line{height:3px;width:80px;background:#c5a16a;margin-bottom:30px}.v3-close-bottom>span{font-size:11px;letter-spacing:2px;color:#e4c492;font-weight:800}.v3-close-bottom h3{font-size:30px;margin:17px 0 28px}.v3-close-bottom p{font-size:17px!important;color:#d8e7f5}.v3-close-banner{margin-top:70px;padding:27px 0;border-top:1px solid #6280a555;border-bottom:1px solid #6280a555;color:#e7c98c;font-size:17px;letter-spacing:2px;font-weight:900}.v3-finish{font-size:12px;letter-spacing:3px;color:#8da8c3;margin-top:80px}.v3-finish b{color:#cda45f}
 @media(max-width:1150px){.v3-editor-grid{grid-template-columns:1fr}}@media(max-width:700px){.v3-two{grid-template-columns:1fr}.v3-preview-frame{flex-basis:280px;width:280px;height:397px}.v3-mini-inner{transform:scale(.3528)}}@media print{.v3-doc-footer,.v3-cover,.v3-close{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.v3-preview-frame{display:none!important}.paper{page-break-inside:avoid!important}.v3-doc-item{break-inside:avoid!important}}
+
+/* Por produto: detalhes verificáveis de cada opção */
+.v3-card-technical{grid-column:1/-1}
+.v3-technical-option{background:#f9fbfe;border:1px solid #e1ebf3;border-radius:12px;padding:16px;margin:13px 0}
+.v3-technical-title{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #e5ecf3}
+.v3-technical-title b{color:#154a7d;font-size:13px}
+.v3-technical-title span{font-size:9px;letter-spacing:1px;font-weight:800;color:#9c835b}
+.v3-technical-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 12px;margin-top:9px}
+.v3-technical-fields label{margin:5px 0;font-size:10px}
+.v3-technical-fields input{padding:9px;font-size:11px}
+.v3-spec-table{margin-top:10px}
+.v3-spec-table th:first-child{width:27%}
+.v3-spec-table th{font-size:10px;padding:13px 8px}
+.v3-spec-table tbody td{font-size:12px;padding:17px 9px;text-align:left}
+.v3-spec-table tbody td:first-child{font-weight:800;color:#16446f}
+@media(max-width:850px){.v3-technical-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.v3-technical-fields{grid-template-columns:1fr}}
